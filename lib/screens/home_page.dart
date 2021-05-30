@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/color_constants.dart';
+import 'package:todo_app/screens/add_task.dart';
 import 'package:todo_app/widgets/tasks_list.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -10,7 +11,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool enable = true;
+  Widget buildBottomSheet(BuildContext context) {
+    return Container();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +75,20 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+              ),
+              context: context,
+              builder: (context) => AddTask());
+        },
         backgroundColor: ColorConstants.primaryColor,
         child: Icon(
           Icons.add,
+          color: Colors.white,
         ),
       ),
     );
