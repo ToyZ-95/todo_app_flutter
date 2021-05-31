@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/color_constants.dart';
+import 'package:todo_app/models/tasks_list_data.dart';
 import 'package:todo_app/screens/add_task.dart';
 import 'package:todo_app/widgets/tasks_list.dart';
 
@@ -13,6 +14,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Widget buildBottomSheet(BuildContext context) {
     return Container();
+  }
+
+  void refreshTasksList() {
+    //TasksListData.tasksList.add(value);
+    Navigator.pop(context);
+    setState(() {});
   }
 
   @override
@@ -48,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 Text(
-                  '12 Tasks',
+                  TasksListData.tasksList.length.toString() + ' Tasks',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18.0,
@@ -77,13 +84,19 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(20),
-                ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20),
               ),
-              context: context,
-              builder: (context) => AddTask());
+            ),
+            context: context,
+            builder: (context) => AddTask(
+              refreshTasksListCallback: () {
+                Navigator.pop(context);
+                setState(() {});
+              },
+            ),
+          );
         },
         backgroundColor: ColorConstants.primaryColor,
         child: Icon(

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/constants/color_constants.dart';
+import 'package:todo_app/models/tasks_list_data.dart';
 
-class AddTask extends StatefulWidget {
-  @override
-  _AddTaskState createState() => _AddTaskState();
-}
+class AddTask extends StatelessWidget {
+  final Function refreshTasksListCallback;
+  final TextEditingController _textEditingController = TextEditingController();
 
-class _AddTaskState extends State<AddTask> {
+  AddTask({this.refreshTasksListCallback});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -25,6 +26,7 @@ class _AddTaskState extends State<AddTask> {
             ),
           ),
           TextField(
+            controller: _textEditingController,
             autofocus: true,
             textAlign: TextAlign.center,
             decoration: InputDecoration(
@@ -39,7 +41,10 @@ class _AddTaskState extends State<AddTask> {
             height: 10.0,
           ),
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              TasksListData.tasksList.add(_textEditingController.text);
+              refreshTasksListCallback();
+            },
             child: Text(
               'Add',
               style: TextStyle(
