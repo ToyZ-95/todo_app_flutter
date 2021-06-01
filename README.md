@@ -1,2 +1,2 @@
 # todo_app
- TODO app in flutter
+ TODO app in flutter using bloc pattern
