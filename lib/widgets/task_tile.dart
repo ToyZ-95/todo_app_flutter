@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/blocs/checkbox_bloc.dart';
 import 'checkbox.dart';
 
 class TaskTile extends StatefulWidget {
   final String text;
-
   TaskTile({this.text});
 
   @override
@@ -11,32 +11,37 @@ class TaskTile extends StatefulWidget {
 }
 
 class _TaskTileState extends State<TaskTile> {
-  bool isChecked = false;
   String text;
-
   _TaskTileState(this.text);
 
-  void checkboxCallback(bool checkboxState) {
-    setState(() {
-      isChecked = !isChecked;
-    });
+  final CheckboxBloc checkboxBloc = CheckboxBloc();
+
+  @override
+  void dispose() {
+    checkboxBloc.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        text,
-        style: TextStyle(
-          fontSize: 24.0,
-          decoration: isChecked ? TextDecoration.lineThrough : null,
-          decorationThickness: 3.85,
-        ),
-      ),
-      trailing: TaskCheckbox(
-        checkboxState: isChecked,
-        toggleCheckboxState: checkboxCallback,
-      ),
-    );
+    return StreamBuilder<bool>(
+        stream: checkboxBloc.stateCheckboxStream,
+        initialData: false,
+        builder: (context, snapshot) {
+          return ListTile(
+            title: Text(
+              text,
+              style: TextStyle(
+                fontSize: 24.0,
+                decoration: snapshot.data ? TextDecoration.lineThrough : null,
+                decorationThickness: 3.85,
+              ),
+            ),
+            trailing: TaskCheckbox(
+              checkboxState: snapshot.data,
+              checkboxBloc: checkboxBloc,
+            ),
+          );
+        });
   }
 }

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/blocs/tasks_list_bloc.dart';
 import 'package:todo_app/constants/color_constants.dart';
-import 'package:todo_app/models/tasks_list_data.dart';
 
 class AddTask extends StatelessWidget {
-  final Function refreshTasksListCallback;
   final TextEditingController _textEditingController = TextEditingController();
 
-  AddTask({this.refreshTasksListCallback});
+  final TasksListBloc tasksListBloc;
+
+  AddTask({this.tasksListBloc});
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +43,8 @@ class AddTask extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              TasksListData.tasksList.add(_textEditingController.text);
-              refreshTasksListCallback();
+              tasksListBloc.addTask(_textEditingController.text);
+              Navigator.pop(context);
             },
             child: Text(
               'Add',

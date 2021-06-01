@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/blocs/tasks_list_bloc.dart';
 import 'package:todo_app/constants/color_constants.dart';
-import 'package:todo_app/models/tasks_list_data.dart';
 import 'package:todo_app/screens/add_task.dart';
 import 'package:todo_app/widgets/tasks_list.dart';
 
@@ -16,10 +16,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container();
   }
 
-  void refreshTasksList() {
-    //TasksListData.tasksList.add(value);
-    Navigator.pop(context);
-    setState(() {});
+  final tasksListBloc = TasksListBloc();
+
+  @override
+  void dispose() {
+    tasksListBloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -54,13 +56,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 50.0,
                   ),
                 ),
-                Text(
-                  TasksListData.tasksList.length.toString() + ' Tasks',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.0,
-                  ),
-                ),
+                StreamBuilder<int>(
+                    stream: tasksListBloc.stateTasksListLengthStream,
+                    initialData: 0,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data.toString() + ' Tasks',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
+                      );
+                    }),
               ],
             ),
           ),
@@ -76,7 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   topRight: Radius.circular(20.0),
                 ),
               ),
-              child: TasksList(),
+              child: StreamBuilder<List<String>>(
+                  stream: tasksListBloc.stateTasksListStream,
+                  initialData: [],
+                  builder: (context, snapshot) {
+                    return TasksList(
+                        tasksList: snapshot.data, tasksListBloc: tasksListBloc);
+                  }),
             ),
           ),
         ],
@@ -90,12 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             context: context,
-            builder: (context) => AddTask(
-              refreshTasksListCallback: () {
-                Navigator.pop(context);
-                setState(() {});
-              },
-            ),
+            builder: (context) => AddTask(tasksListBloc: tasksListBloc),
           );
         },
         backgroundColor: ColorConstants.primaryColor,
